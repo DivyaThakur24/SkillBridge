@@ -1,0 +1,18 @@
+Neo4j Fraud Detection Graph Demo
+
+This project is a fraud-detection prototype built with Neo4j, Python, and Cypher.
+It models users, transactions, cards, devices, IP addresses, and merchants as a graph.
+
+The reason for using a graph database is that fraud is relationship-driven.
+Suspicious activity often appears when multiple accounts share the same device, card, or IP address.
+
+In the cypher folder, I define the schema, load sample data, and write detection queries.
+Those queries identify shared devices and cards, reused payment instruments, and indirect multi-hop links between accounts.
+
+The Python app connects to Neo4j, waits for the database to be available, applies the schema, loads the data, and runs the Cypher queries automatically.
+
+To run it, I start Neo4j with Docker Compose and then execute the Python script.
+
+The output shows suspicious patterns such as users U100 and U300 sharing both a device and a card, and users U200, U500, and U600 connected through the same card and device infrastructure.
+
+This prototype shows how graph databases can make fraud signals easier to detect than traditional table-based approaches.

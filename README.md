@@ -113,6 +113,13 @@ Fraud investigations are highly relationship-driven. A graph model helps surface
 - You can extend the graph with geolocation, chargebacks, phone numbers, or watchlist entities.
 - The queries in `cypher/detection_queries.cypher` are a good starting point for risk rules and investigation workflows.
 
+## Demo Assets
+
+- Screenshot: `demo-output.png`
+- Console output: `demo-output.txt`
+- Video walkthrough script: `demo-video-script.md`
+- Short narration script: `demo-video-short-script.txt`
+
 ## License
 
 This project is available under the MIT License. See `LICENSE`.

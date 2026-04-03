@@ -1,0 +1,8 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+neo4j/data/
+neo4j/logs/
+neo4j/plugins/
+

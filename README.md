@@ -1,79 +1,89 @@
-# Neo4j Fraud Link Analysis
+# Voice-Controlled Local AI Agent
 
-Suggested GitHub repository name: `neo4j-fraud-link-analysis`
+A local-first AI agent that accepts audio, transcribes it into text, classifies the user's intent, executes safe local tools, and shows the full pipeline in a Streamlit interface.
 
-A small fraud-detection prototype that uses Neo4j to model relationships between users, payment instruments, devices, IP addresses, and transactions.
+## Features
 
-The graph structure makes it easier to detect suspicious multi-hop patterns such as:
+- Audio input from:
+  - microphone recording in the UI
+  - uploaded audio files such as `.wav`, `.mp3`, and `.m4a`
+- Speech-to-text with a local Hugging Face Whisper model by default
+- Intent understanding with a local Ollama model by default
+- Safe tool execution restricted to the repository's `output/` folder
+- UI output for:
+  - transcribed text
+  - detected intent
+  - action taken
+  - final result
 
-- Multiple users sharing the same device and card
-- Transaction chains connected through shared infrastructure
-- Accounts indirectly linked through cards, devices, or IPs within a few hops
+## Supported Intents
 
-## Stack
+- `create_file`
+- `write_code`
+- `summarize_text`
+- `general_chat`
 
-- Neo4j 5
-- Python 3.11+
-- Cypher
-- Docker Compose
+## Architecture
 
-## Resume-Ready Project Bullets
+```text
+Audio Input
+  -> Speech-to-Text
+  -> Intent Classifier
+  -> Tool Router
+  -> Safe Local Execution
+  -> Streamlit UI
+```
 
-- Built a fraud-detection prototype in Neo4j to model relationships between users, transactions, cards, devices, IP addresses, and merchants.
-- Wrote Cypher queries to surface suspicious multi-hop relationship patterns, including shared devices, reused cards, and indirectly linked accounts.
-- Automated graph setup and rule execution with Python and Docker Compose, making the investigation workflow reproducible end to end.
+### Speech-to-Text
 
-## Repository Layout
+- Default: `openai/whisper-tiny.en` via Hugging Face `transformers`
+- Optional fallback: OpenAI or Groq transcription APIs if local hardware is too limited
+
+### Intent Understanding
+
+- Default: local Ollama model, configured as `llama3.2:3b`
+- Fallback: deterministic rule-based classifier if Ollama is unavailable
+
+### Tool Execution
+
+The agent supports:
+
+- creating files and folders
+- generating and writing code to a file
+- summarizing text
+- answering general chat prompts
+
+All writes are constrained to:
+
+```text
+output/
+```
+
+The app refuses to write outside that directory.
+
+## Project Structure
 
 ```text
 .
-|-- cypher
-|   |-- detection_queries.cypher
-|   |-- sample_data.cypher
-|   `-- schema.cypher
-|-- src
-|   `-- app.py
-|-- docker-compose.yml
+|-- LICENSE
+|-- README.md
 |-- requirements.txt
-`-- README.md
+|-- output/
+`-- src/
+    |-- app.py
+    `-- voice_agent/
+        |-- __init__.py
+        |-- agent.py
+        |-- config.py
+        |-- intent.py
+        |-- llm.py
+        |-- models.py
+        |-- stt.py
+        |-- tools.py
+        `-- ui.py
 ```
 
-## What It Models
-
-Nodes:
-
-- `User`
-- `Transaction`
-- `Card`
-- `Device`
-- `IPAddress`
-- `Merchant`
-
-Relationships:
-
-- `(:User)-[:MADE]->(:Transaction)`
-- `(:Transaction)-[:USED_CARD]->(:Card)`
-- `(:Transaction)-[:USED_DEVICE]->(:Device)`
-- `(:Transaction)-[:USED_IP]->(:IPAddress)`
-- `(:Transaction)-[:AT_MERCHANT]->(:Merchant)`
-- `(:User)-[:OWNS_CARD]->(:Card)`
-- `(:User)-[:REGISTERED_DEVICE]->(:Device)`
-
-## Quick Start
-
-### 1. Start Neo4j
-
-```bash
-docker compose up -d
-```
-
-Neo4j Browser:
-
-- URL: `http://localhost:7474`
-- Username: `neo4j`
-- Password: `fraudproto123`
-
-### 2. Create and activate a virtual environment
+## Setup
 
 ```bash
 python -m venv .venv
@@ -81,45 +91,64 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 3. Load the graph and run detections
+## Run
 
 ```bash
-python src/app.py
+streamlit run src/app.py
 ```
 
-The script will:
+Open the local URL printed by Streamlit, usually `http://localhost:8501`.
 
-1. Create constraints
-2. Insert sample fraud-oriented data
-3. Run multi-hop Cypher detection queries
-4. Print suspicious patterns to the console
+## Environment Variables
 
-## Example Detection Logic
+Create a `.env` file if needed:
 
-This prototype includes Cypher queries for:
+```env
+STT_MODE=local
+STT_MODEL_ID=openai/whisper-tiny.en
+LLM_MODE=ollama
+OLLAMA_MODEL=llama3.2:3b
+OLLAMA_URL=http://localhost:11434/api/generate
+OPENAI_API_KEY=
+GROQ_API_KEY=
+```
 
-- Users sharing cards, devices, and IPs
-- Indirect user-to-user links across 2 to 4 hops
-- Transaction clusters routed through shared cards or devices
-- Accounts connected to the same merchant through overlapping infrastructure
+## Example Flow
 
-## Why Neo4j Fits This Use Case
+Voice input:
 
-Fraud investigations are highly relationship-driven. A graph model helps surface hidden links that are hard to spot in flat tables, especially when suspicious behavior emerges through shared entities and multi-hop traversal.
+```text
+Create a Python file with a retry function.
+```
 
-## Notes
+Execution:
 
-- The included dataset is synthetic and designed for demonstration.
-- You can extend the graph with geolocation, chargebacks, phone numbers, or watchlist entities.
-- The queries in `cypher/detection_queries.cypher` are a good starting point for risk rules and investigation workflows.
+1. Whisper transcribes the audio.
+2. The classifier maps the request to `write_code`.
+3. The tool layer generates Python code.
+4. The file is written inside `output/`.
+5. The UI shows the transcription, intent, action, and result.
 
-## Demo Assets
+## Hardware Workaround
 
-- Screenshot: `demo-output.png`
-- Console output: `demo-output.txt`
-- Video walkthrough script: `demo-video-script.md`
-- Short narration script: `demo-video-short-script.txt`
+This project is local-first. If your machine cannot run Whisper or an Ollama model smoothly:
 
-## License
+- set `STT_MODE=api` and use OpenAI or Groq for transcription
+- keep the intent stage on Ollama if available
+- rely on the built-in rule-based intent fallback if Ollama is unavailable
 
-This project is available under the MIT License. See `LICENSE`.
+If you switch to API STT for a submission, document that hardware limitation clearly in your final demo notes.
+
+## Deliverables Notes
+
+This repository contains the working app code and setup instructions. For the assignment submission, add:
+
+- a 2-3 minute demo video link
+- a technical article link on Medium, Dev.to, or Substack
+
+## Suggested Demo Prompts
+
+- `Create a file named notes.txt`
+- `Create a Python file with a retry function`
+- `Summarize this paragraph about local AI agents`
+- `Tell me what this assistant can do`

@@ -21,7 +21,7 @@ SkillBridge is a FastAPI-based REST API for managing attendance across multiple 
 | Layer | Technology |
 |-------|------------|
 | Framework | FastAPI 0.104.1 |
-| Database | PostgreSQL (SQLAlchemy ORM) |
+| Database | PostgreSQL (SQLAlchemy ORM) — SQLite for local dev |
 | Authentication | PyJWT + Passlib/Bcrypt |
 | Testing | Pytest + HTTPx |
 | Deployment | Railway/Render/Fly.io (ready) |
@@ -31,7 +31,7 @@ SkillBridge is a FastAPI-based REST API for managing attendance across multiple 
 ### Prerequisites
 - Python 3.8+
 - pip
-- PostgreSQL (or any supported database via SQLAlchemy)
+- PostgreSQL (optional — SQLite works out of the box for local development)
 
 ### Installation
 
@@ -55,7 +55,8 @@ SkillBridge is a FastAPI-based REST API for managing attendance across multiple 
    ```bash
    cp .env.example .env
    ```
-   Update `DATABASE_URL` with your PostgreSQL connection string.
+   - For **SQLite** (default): No changes needed — works out of the box
+   - For **PostgreSQL**: Update `DATABASE_URL` with your PostgreSQL connection string
 
 5. **Seed database:**
    ```bash

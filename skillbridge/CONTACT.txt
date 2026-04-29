@@ -1,0 +1,7 @@
+Full Name: [Your Full Name]
+Email: [Your Email]
+Phone: [Your Phone Number]
+GitHub Profile: [Your GitHub Profile Link]
+LinkedIn: [Your LinkedIn Profile Link]
+
+Most Challenging Part: Implementing the dual-token authentication system for the Monitoring Officer role while ensuring proper scope validation and integrating it seamlessly with the role-based access control across all endpoints.

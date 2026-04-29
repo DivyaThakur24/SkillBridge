@@ -12,7 +12,12 @@ from src.config import settings
 
 # Create SQLAlchemy engine with connection pool
 # echo=False means SQL queries won't be printed to console (set to True for debugging)
-engine = create_engine(settings.DATABASE_URL, echo=False)
+# check_same_thread=False is needed for SQLite with FastAPI
+engine = create_engine(
+    settings.DATABASE_URL, 
+    echo=False,
+    connect_args={"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {}
+)
 
 # Create a factory for generating new database sessions
 # autocommit=False: transactions must be explicitly committed

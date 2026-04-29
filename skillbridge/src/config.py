@@ -23,7 +23,7 @@ class Settings(BaseSettings):
         MONITORING_TOKEN_EXPIRATION_MINUTES: Minutes until monitoring-scoped token expires (1 hour)
     """
     
-    DATABASE_URL: str = "postgresql://user:password@localhost/skillbridge"
+    DATABASE_URL: str = "sqlite:///./skillbridge.db"
     JWT_SECRET_KEY: str = "your-secret-key-change-in-production"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_HOURS: int = 24

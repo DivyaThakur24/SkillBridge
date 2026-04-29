@@ -68,7 +68,21 @@ SkillBridge is a FastAPI-based REST API for managing attendance across multiple 
    ```bash
    uvicorn src.main:app --reload
    ```
-   API available at `http://localhost:8000`
+
+## How to Run
+
+```bash
+python -m uvicorn src.main:app --reload
+```
+
+### URLs
+
+| URL | Description |
+|-----|-------------|
+| `http://127.0.0.1:8000` | API root endpoint |
+| `http://127.0.0.1:8000/docs` | **Swagger UI** — Interactive API explorer (try endpoints here) |
+| `http://127.0.0.1:8000/redoc` | ReDoc — Alternative API documentation |
+| `http://127.0.0.1:8000/openapi.json` | OpenAPI schema (JSON) |
 
 ## API Documentation
 
